@@ -43,8 +43,7 @@ component ProfileInlineCache{
             System.puts(Strings.format2("%d, %s, ", data.associatedFunc.identifier, data.associatedFunc.label));
             System.puts(Strings.format3("%s, %d, %d, ", data.instruction, data.hits, data.misses));
             System.puts(
-                if (data.classesSeen > InlineCache.picLimit,
-                    Strings.format1(">= %d\n", data.classesSeen),
+                if (data.classesSeen > 1, ">=2\n",
                     Strings.format1("%d\n", data.classesSeen))
             );
 		}

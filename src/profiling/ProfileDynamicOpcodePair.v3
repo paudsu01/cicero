@@ -13,7 +13,7 @@ component ProfileDynamicOpcodePair{
     def printStats(){
         System.puts("# Omitting opcode pairs executed zero times\n");
         System.puts("# Opcode pairs are only tracked if they are in the same bytecode frame\n");
-        System.puts("opcode, next opcode, counts, total dispatch cost(μs)\n");
+        System.puts("opcode, next opcode, counts, total dispatch cost(ticks)\n");
         for (row=0; row < Opcodes.numOpcodes; row++){
             for (col=0; col < Opcodes.numOpcodes; col++){
                 def counts : int = Profiling.dynamicOpcodePairCounts[row][col];

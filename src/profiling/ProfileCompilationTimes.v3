@@ -1,12 +1,12 @@
 class CompilationTimeData {
     def label: string;
-    def time: int; // in nanoseconds
+    def time: long; // in ticks
     new(label, time) {}
 }
 
 component ProfileCompilationTimes {
 
-    def profile(bytecodeId: int, label: string, compilationTime: int){
+    def profile(bytecodeId: int, label: string, compilationTime: long){
         Profiling.compilationTimes[bytecodeId] = CompilationTimeData.new(label, compilationTime);
     }
 
@@ -16,11 +16,11 @@ component ProfileCompilationTimes {
                 "# Code label is the function/method name. Exceptions: if it is the top-level code, it is \"repl\", classes field and init have their labels as well\n",
                 TopLevel.name));
         var replTotalCompilationTime = 0L;
-        System.puts("Bytecode ID, Label, Inclusive Compilation Time(μs)\n");
+        System.puts("Bytecode ID, Label, Inclusive Compilation Time(ticks)\n");
         for (list = Maps.keyList(Profiling.compilationTimes); list != null; list = list.tail) {
             def bytecodeId: int = list.head;
             def data: CompilationTimeData = Profiling.compilationTimes[bytecodeId];
-            System.puts(Strings.format3("%d, %s, %d\n", bytecodeId, data.label, data.time));
+            System.puts(Strings.format3("%d, %s, %s\n", bytecodeId, data.label, ProfilingHelpers.longToString(data.time)));
             
             if (data.label == TopLevel.name) replTotalCompilationTime += data.time;
         }

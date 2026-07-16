@@ -2,8 +2,8 @@
 class ProfiledFuncData #unboxed {
 	def label: string;
 	var calls: int;
-	var inclusiveTime: int; // μs
-	var exclusiveTime: int; // μs
+	var inclusiveTime: long; // ticks
+	var exclusiveTime: long; // ticks
 
 	new(label, calls, inclusiveTime, exclusiveTime) {}
 }
@@ -12,14 +12,14 @@ class ProfiledFuncData #unboxed {
 // The relevant call frame object for any `ProfileCallFrameData` object will always be at the same depth in the VM's call frames array stack.
 class ProfileCallFrameData #unboxed {
 	def uid: int;
-	def startTime: int; // μs
-	var totalCalleeTime: int = 0; // μs
+	def startTime: long; // ticks
+	var totalCalleeTime: long = 0; // ticks
 	new(uid, startTime) {}
 }
 
 component ProfileFunctionCalls{
 
-    private def profile(dict: HashMap<int, ProfiledFuncData>, key: int, name: string, inclusiveTime: int, exclusiveTime: int){
+    private def profile(dict: HashMap<int, ProfiledFuncData>, key: int, name: string, inclusiveTime: long, exclusiveTime: long){
         if (dict.has(key)){
             def data: ProfiledFuncData = dict[key];
             data.calls += 1; // increment calls
@@ -30,11 +30,11 @@ component ProfileFunctionCalls{
         }
     }
 
-    def profileFunctionCall(metadata: FunctionProfileMetadata, inclusiveTime: int, exclusiveTime: int){
+    def profileFunctionCall(metadata: FunctionProfileMetadata, inclusiveTime: long, exclusiveTime: long){
         profile(Profiling.funcCallCounts, metadata.identifier, metadata.label, inclusiveTime, exclusiveTime);
     }
 
-    def profileFunctionObjectCall(uid: int, label: string, inclusiveTime: int, exclusiveTime: int){
+    def profileFunctionObjectCall(uid: int, label: string, inclusiveTime: long, exclusiveTime: long){
         profile(Profiling.funcObjectCallCounts, uid, label, inclusiveTime, exclusiveTime);
     }
 
@@ -44,17 +44,17 @@ component ProfileFunctionCalls{
             def data: ProfiledFuncData = dict[key];
 
             System.puts(Strings.format3("%d, %s, %d, ", key, data.label, data.calls));
-            System.puts(Strings.format2("%d, %d\n", data.inclusiveTime, data.exclusiveTime));
+            System.puts(Strings.format2("%s, %s\n", ProfilingHelpers.longToString(data.inclusiveTime), ProfilingHelpers.longToString(data.exclusiveTime)));
         }
     }
 
     def printFuncCallsStats(){
-        System.puts("Function identifier, Function label, calls, inclusive execution time(μs), exclusive execution time(μs)\n");
+        System.puts("Function identifier, Function label, calls, inclusive execution time(ticks), exclusive execution time(ticks)\n");
         printStats(Profiling.funcCallCounts);
     }
 
     def printFuncObjectCallsStats(){
-        System.puts("Function object uid, Function label, calls, inclusive execution time(μs), exclusive execution time(μs)\n");
+        System.puts("Function object uid, Function label, calls, inclusive execution time(ticks), exclusive execution time(ticks)\n");
         printStats(Profiling.funcObjectCallCounts);
     }
 }

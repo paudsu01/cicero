@@ -22,16 +22,16 @@ class CodeObject(range: FileRange) extends Object { // XXX range is null if code
 			Virgil   => System.error("compile error", "attempting to compile Virgil code to bytecode");
 			Bytecode => System.error("compile error", "compiling what has already been compiled to bytecode");
 			AST(ast) => {
-				var startTime: int;
+				var startTime: long;
 
 				if (CiceroOptions.profileCompilationTimes) {
-					startTime = System.ticksUs();
+					startTime = CiRuntime.readTsc();
 				}
 
 				def bytecode = BytecodeCompiler.new(ast, params, isTopLevel, isInit).extract();
 
 				if (CiceroOptions.profileCompilationTimes) {
-					def endTime = System.ticksUs();
+					def endTime = CiRuntime.readTsc();
 					ProfileCompilationTimes.profile(bytecode.id, label, endTime - startTime);
 				}
 

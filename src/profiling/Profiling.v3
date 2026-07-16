@@ -64,10 +64,10 @@ component ProfilingHelpers {
         return matrix;
     }
 
-	def handleProfilingDuringReturn(endTime: int, callerFunc: FunctionProfileMetadata, calleeFunc: FunctionProfileMetadata){
+	def handleProfilingDuringReturn(endTime: long, callerFunc: FunctionProfileMetadata, calleeFunc: FunctionProfileMetadata){
 		def poppedDataFrame = Profiling.callDataFrames.pop();
-		def inclusiveExecutionTime: int = endTime - poppedDataFrame.startTime;
-		def exclusiveExecutionTime: int = inclusiveExecutionTime - poppedDataFrame.totalCalleeTime;
+		def inclusiveExecutionTime: long = endTime - poppedDataFrame.startTime;
+		def exclusiveExecutionTime: long = inclusiveExecutionTime - poppedDataFrame.totalCalleeTime;
 
 		if (callerFunc != null){
 			if (CiceroOptions.profileCallerCalleePairs) {
